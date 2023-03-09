@@ -106,7 +106,7 @@ async function checkAndSave(bucketName, key, messages) {
             username: message.username,
             text: `"${message.text.replace(/\n/g, ' ').replace(/"/g, '""').replace(/,/g, ' ')}"`,
             symbol: message.symbol,
-            btcprice: await currentBtcPrice,
+            btcprice: currentBtcPrice,
             chatspeed: currentChatSpeed // Add chatspeed property to newMessage object
           };
           console.log(newMessage.btcprice)
