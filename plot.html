@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <div id="myDiv"></div>
+
+    <button id="toggleUpdate">Disable Update</button>
+
+    <script>
+let updateEnabled = true;
+let maxDataPoints = 10000;
+function updateChart() {
+    if (!updateEnabled) return;
+    let time = [];
+    let btcprice = [];
+    let currentchatspeed = [];
+    let chatText = [];
+
+    fetch('http://192.168.1.100:8080/chatdata.csv?_=' + new Date().getTime())
+        .then(response => response.text())
+        .then(data => {
+            let rows = data.split('\n');
+            for (let i = Math.max(0, rows.length - maxDataPoints); i < rows.length; i++) {
+                let row = rows[i].split(',');
+                time.push(row[1]);
+                btcprice.push(row[6]);
+                currentchatspeed.push(row[7]);
+                chatText.push(row[4]); // Fetch text value from column 5
+            }
+
+            // Find index of highest BTC price in last 1000 values
+            let highIndex = btcprice.slice(-1000).reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
+
+            // Display chat message that matches the time for breaking the high
+            console.log(`Chat message at high: ${chatText[highIndex]}`);
+
+            let trace1 = {
+  x: time,
+  y: btcprice,
+  name: 'BTC Price',
+  type: 'scatter',
+  line: {
+    color: 'orange'
+  }
+};
+let trace2 = {
+  x: time,
+  y: currentchatspeed,
+  name: 'Current Chat Speed',
+  xaxis: 'x2',
+  yaxis: 'y2',
+  type: 'scatter',
+  line: {
+    color: 'black'
+  }
+};
+            
+             // Add annotation to display chat message at high
+             let layout = {
+                 annotations:[{
+                     xref:'x', 
+                     yref:'y', 
+                     x:time[highIndex], 
+                     y:btcprice[highIndex], 
+                     text:`${chatText[highIndex]}`, 
+                     showarrow:true}],
+                 grid:{rows: 2, columns: 1, pattern:'independent'},
+                 title:'Multi-Pane Chart of chatspeed.csv updated',
+                 xaxis:{tickfont:{color:'white'}},
+                 xaxis2:{tickfont:{color:'white'}}
+             };
+             
+             Plotly.react('myDiv', [trace1, trace2], layout);
+         });
+}
+
+document.getElementById('toggleUpdate').addEventListener('click', () => {
+  updateEnabled = !updateEnabled;
+  document.getElementById('toggleUpdate').textContent =
+    updateEnabled ? 'Disable Update' : 'Enable Update';
+});
+
+updateChart(); // Update chart initially
+setInterval(updateChart, 1000); // Update chart every second
+    </script>
+  </body>
+</html>
