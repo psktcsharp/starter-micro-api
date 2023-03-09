@@ -160,7 +160,7 @@ async function fetchData() {
    console.log(`Chat Speed: ${messagesPerMinute(messages)} messages per minute`);
 
    // Call saveToCSV function with messages array as an argument 
-   await checkAndSave(cyclic-teal-famous-turkey-eu-central-1', 'chatdata.json', messages);
+   await checkAndSave('cyclic-teal-famous-turkey-eu-central-1', 'chatdata.json', messages);
 
  } catch (error) { 
    // If there is an error, log it to the console 
