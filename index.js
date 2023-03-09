@@ -118,7 +118,7 @@ async function checkAndSave(bucketName, key, messages) {
         }
       }
     }
-  }
+  
 
 // Declare an async function that fetches data from the URL and calls saveToCSV function with it
 
