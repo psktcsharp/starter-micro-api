@@ -9,5 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+     "cheerio": "^1.0.0-rc.12",
+    "csv-stringify": "^6.3.0",
+    "fs-extra": "^11.1.0",
+    "json2csv": "^6.0.0-alpha.2",
+    "xmldom": "^0.6.0",
+    "node-fetch": "^3.x.x"
   }
 }
