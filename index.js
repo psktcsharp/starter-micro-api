@@ -155,7 +155,7 @@ http.createServer(function (req, res) {
     res.write('Yo!');
     // Call fetchData function every 5 seconds using setInterval 
     setInterval(fetchData,5000);
-    res.end();
+
 }).listen(process.env.PORT || 3000);
 
 
