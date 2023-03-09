@@ -11,19 +11,19 @@ const AWS = require("aws-sdk");
 const s3 = new AWS.S3()
 
 
-async function saveToS3(bucketName, key, data) {
-    const params = {
-        Bucket: bucketName,
-        Key: key,
-        Body: data
-    };
-    try {
-        await s3.putObject(params).promise();
-        console.log(`Successfully uploaded data to ${bucketName}/${key}`);
-    } catch (error) {
-        console.error(error);
-    }
-}
+// async function saveToS3(bucketName, key, data) {
+//     const params = {
+//         Bucket: bucketName,
+//         Key: key,
+//         Body: data
+//     };
+//     try {
+//         await s3.putObject(params).promise();
+//         console.log(`Successfully uploaded data to ${bucketName}/${key}`);
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
 // // store something
 // await s3.putObject({
 //                 Body: JSON.stringify({key:"value"}),
@@ -160,7 +160,8 @@ async function fetchData() {
    console.log(`Chat Speed: ${messagesPerMinute(messages)} messages per minute`);
 
    // Call saveToCSV function with messages array as an argument 
-   await checkAndSave('my-bucket', 'chatdata.json', messages);
+   await checkAndSave(cyclic-teal-famous-turkey-eu-central-1
+', 'chatdata.json', messages);
 
  } catch (error) { 
    // If there is an error, log it to the console 
