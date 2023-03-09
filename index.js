@@ -7,7 +7,7 @@ const { Parser } = require('json2csv');
 var DOMParser = require('xmldom').DOMParser;
 const fse = require("fs-extra");
 var cheerio = require('cheerio');
-const { createClient } = require('@supabase/supabase-js')
+
 
 
 
@@ -17,9 +17,7 @@ let currentBtcPrice;
 let currentChatSpeed;
 
 
-const supabaseUrl = 'https://neagbwwobyqvckagizsx.supabase.co'
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lYWdid3dvYnlxdmNrYWdpenN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzgyOTU0MzEsImV4cCI6MTk5Mzg3MTQzMX0.vWsrJB96E-fOHtJlWVbdUL0d6yfVcDekJDS-I117wQk'
-const supabase = createClient(supabaseUrl, supabaseKey)
+
 async function checkAndSave(messages) {
     let chatData;
     try {
