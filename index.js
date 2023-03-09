@@ -83,42 +83,7 @@ async function checkAndSave(bucketName, key, messages) {
     } catch (error) {
         console.error(error);
     }
-
-    for (let message of messages) {
-        let id = message.id;
-        let exists = false;
-        for (let line of lines) {
-          let lineId = line.split(",")[0];
-          if (lineId === id) {
-            exists = true;
-            break;
-          }
-        }
-        if (!exists) {
-          try {
-            // Create a new object with only the desired properties
-            const newMessage = {
-              id: message.id,
-              time: message.time,
-              user_id: message.user_id,
-              username: message.username,
-              text: `"${message.text.replace(/\n/g, ' ').replace(/"/g, '""').replace(/,/g, ' ')}"`,
-              symbol: message.symbol,
-              btcprice: currentBtcPrice,
-              chatspeed: currentChatSpeed // Add chatspeed property to newMessage object
-            };
-            console.log(newMessage.btcprice)
-            //await fse.appendFile("chatdata.csv", Object.values(newMessage).join(",") + "\n");
-              saveToS3('cyclic-teal-famous-turkey-eu-central-1', 'chatdata.csv', chatData);
-          } catch (error) {
-            console.error(error);
-            continue;
-          }
-        }
-      }
-    
 }
-    
     
  
 
