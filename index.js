@@ -109,7 +109,7 @@ async function checkAndSave(bucketName, key, messages) {
             };
             console.log(newMessage.btcprice)
             //await fse.appendFile("chatdata.csv", Object.values(newMessage).join(",") + "\n");
-              saveToS3('my-bucket', 'chatdata.csv', chatData);
+              saveToS3('cyclic-teal-famous-turkey-eu-central-1', 'chatdata.csv', chatData);
           } catch (error) {
             console.error(error);
             continue;
@@ -160,8 +160,7 @@ async function fetchData() {
    console.log(`Chat Speed: ${messagesPerMinute(messages)} messages per minute`);
 
    // Call saveToCSV function with messages array as an argument 
-   await checkAndSave(cyclic-teal-famous-turkey-eu-central-1
-', 'chatdata.json', messages);
+   await checkAndSave(cyclic-teal-famous-turkey-eu-central-1', 'chatdata.json', messages);
 
  } catch (error) { 
    // If there is an error, log it to the console 
