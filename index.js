@@ -7,9 +7,35 @@ const { Parser } = require('json2csv');
 var DOMParser = require('xmldom').DOMParser;
 const fse = require("fs-extra");
 var cheerio = require('cheerio');
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3()
 
 
+async function saveToS3(bucketName, key, data) {
+    const params = {
+        Bucket: bucketName,
+        Key: key,
+        Body: data
+    };
+    try {
+        await s3.putObject(params).promise();
+        console.log(`Successfully uploaded data to ${bucketName}/${key}`);
+    } catch (error) {
+        console.error(error);
+    }
+}
+// // store something
+// await s3.putObject({
+//                 Body: JSON.stringify({key:"value"}),
+//                 Bucket: "cyclic-teal-famous-turkey-eu-central-1",
+//                 Key: "some_files/my_file.json",
+//             }).promise()
 
+// get it back
+// let my_file = await s3.getObject({
+//                 Bucket: "cyclic-teal-famous-turkey-eu-central-1",
+//                 Key: "some_files/my_file.json",
+//             }).promise()
 
 
 
@@ -18,22 +44,46 @@ let currentChatSpeed;
 
 
 
-async function checkAndSave(messages) {
-    let chatData;
+async function checkAndSave(bucketName, key, messages) {
+    let existingData;
     try {
-      chatData = await fse.readFile("chatdata.csv", "utf8");
+        // Get the existing data from the S3 bucket
+        const response = await s3.getObject({
+            Bucket: bucketName,
+            Key: key
+        }).promise();
+        existingData = JSON.parse(response.Body.toString());
     } catch (error) {
-      console.error(error);
-      return;
+        // If there is no existing data, initialize an empty array
+        if (error.code === 'NoSuchKey') {
+            existingData = [];
+        } else {
+            console.error(error);
+            return;
+        }
     }
-    let lines = chatData.split("\n");
-    
-    // Check if this is the first entry in chatdata.csv
-    if (lines.length === 0 || (lines.length === 1 && lines[0] === '')) {
-      // Add a row with column headers
-      await fse.appendFile("chatdata.csv", "id,time,user_id,username,text,symbol,btcprice,chatspeed\n");
+
+    // Create a Set of existing message IDs for faster lookup
+    const existingMessageIds = new Set(existingData.map(message => message.id));
+
+    // Filter out any duplicate messages based on message ID
+    const newMessages = messages.filter(message => !existingMessageIds.has(message.id));
+
+    // Combine the existing data with the new messages
+    const updatedData = [...existingData, ...newMessages];
+
+    try {
+        // Upload the updated data to the S3 bucket
+        await s3.putObject({
+            Bucket: bucketName,
+            Key: key,
+            Body: JSON.stringify(updatedData)
+        }).promise();
+        console.log(`Successfully uploaded data to ${bucketName}/${key}`);
+    } catch (error) {
+        console.error(error);
     }
-    
+}
     
     
     for (let message of messages) {
@@ -60,7 +110,8 @@ async function checkAndSave(messages) {
             chatspeed: currentChatSpeed // Add chatspeed property to newMessage object
           };
           console.log(newMessage.btcprice)
-          await fse.appendFile("chatdata.csv", Object.values(newMessage).join(",") + "\n");
+          //await fse.appendFile("chatdata.csv", Object.values(newMessage).join(",") + "\n");
+            saveToS3('my-bucket', 'chatdata.csv', chatData);
         } catch (error) {
           console.error(error);
           continue;
@@ -107,7 +158,7 @@ async function fetchData() {
    console.log(`Chat Speed: ${messagesPerMinute(messages)} messages per minute`);
 
    // Call saveToCSV function with messages array as an argument 
-   await checkAndSave(messages);
+   await checkAndSave('my-bucket', 'chatdata.json', messages);
 
  } catch (error) { 
    // If there is an error, log it to the console 
