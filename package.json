@@ -14,6 +14,8 @@
     "fs-extra": "^11.1.0",
     "json2csv": "^6.0.0-alpha.2",
     "xmldom": "^0.6.0",
-    "node-fetch": "^3.x.x"
+    "node-fetch": "^3.x.x",
+    "aws-sdk": "^2.1034.0"
+
   }
 }
